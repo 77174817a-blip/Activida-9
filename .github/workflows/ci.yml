@@ -1,0 +1,35 @@
+name: Integración Continua (Node.js)
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  calidad-codigo:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Paso 1: Bajar el código del repo al servidor de GitHub
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      # Paso 2: Preparar entorno Node
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # Paso 3: Instalar dependencias (limpio y rápido)
+      - name: Instalar dependencias
+        run: npm ci
+
+      # Paso 4: Análisis Estático (Linting)
+      - name: Ejecutar Linter
+        run: npm run lint
+
+      # Paso 5: Pruebas Unitarias
+      - name: Ejecutar Tests
+        run: npm test
